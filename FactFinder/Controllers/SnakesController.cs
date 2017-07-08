@@ -1,4 +1,5 @@
-﻿using Swashbuckle.Swagger.Annotations;
+﻿using FactFinder.Common.Response;
+using Swashbuckle.Swagger.Annotations;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -65,7 +66,8 @@ namespace FactFinder.Controllers
 
             //Pretend repository call.
             IEnumerable<SnakeDTO> snakes = SnakeRepository.GetSnakes(offset, limit);
-            return Ok(snakes);
+
+            return snakes.Any() ? Ok(snakes) : NoContent.Build();
         }
 
         /// <summary>
