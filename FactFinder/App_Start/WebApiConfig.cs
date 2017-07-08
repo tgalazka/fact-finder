@@ -14,6 +14,7 @@ namespace FactFinder
             // Web API routes
             config.MapHttpAttributeRoutes();
 
+            //2017.07.08 (TJG) - Default template for Route discovery.
             config.Routes.MapHttpRoute(
                 name: "DefaultApi",
                 routeTemplate: "api/{controller}/{id}",

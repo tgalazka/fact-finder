@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Swashbuckle.Swagger.Annotations;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -13,8 +14,7 @@ namespace FactFinder.Controllers
     /// This a sample that allows for auto-magically generated route bindings 
     /// to be overridden on the class level.
     /// </summary>
-    [RoutePrefix("snake_case")]
-    public class SnakeCaseController : ApiController
+    public class SnakesController : ApiController
     {
 
         private static List<SnakeDTO> _snakes = new List<SnakeDTO>()
@@ -47,10 +47,10 @@ namespace FactFinder.Controllers
         /// <param name="offset">Number of entries to skip for pagination; muste be a positive number</param>
         /// <returns>A collection of Snakes</returns>
         [HttpGet]
-        [Route("snakes")]
-        [ResponseType(typeof(List<SnakeDTO>))]
-        public IHttpActionResult GetAllSnakes(
-            [Microsoft.AspNetCore.Mvc.FromQuery]int? limit = null, 
+        [ResponseType(typeof(IEnumerable<SnakeDTO>))]
+        [SwaggerResponse(HttpStatusCode.NoContent, Description = "No matching Snakes found.")]
+        public IHttpActionResult FilterSnakes(
+            [Microsoft.AspNetCore.Mvc.FromQuery]int? limit = null,
             [Microsoft.AspNetCore.Mvc.FromQuery]int? offset = null)
         {
             if (offset.HasValue && offset < 0)
@@ -68,8 +68,27 @@ namespace FactFinder.Controllers
             return Ok(snakes);
         }
 
+        /// <summary>
+        /// Retieves the Snake indicated by the supplied ID.
+        /// </summary>
+        /// <param name="id">The ID of the Snake to retrieve.</param>
+        /// <returns></returns>
+        [HttpGet]
+        [ResponseType(typeof(SnakeDTO))]
+        [SwaggerResponse(HttpStatusCode.NotFound, Description = "No matching Snake found.")]
+        public IHttpActionResult RetrieveSnake(int id)
+        {
+            SnakeDTO snake = _snakes.ElementAtOrDefault(id - 1);
+            if (snake == null)
+                return NotFound();
+            else
+                return Ok<SnakeDTO>(snake);
+        }
+
         private class SnakeRepository
         {
+
+            [NonAction]
             public static IEnumerable<SnakeDTO> GetSnakes(int? offset, int? limit)
             {
                 if (limit.HasValue || offset.HasValue)
