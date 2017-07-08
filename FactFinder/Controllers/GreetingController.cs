@@ -17,7 +17,7 @@ namespace FactFinder.Controllers
         /// <summary>
         /// Responds with a simple greeting message.
         /// </summary>
-        /// <param name="name">Optional query parameter to generate a greeting for; defaults to 'World' if not supplied.</param>
+        /// <param name="name">Optional name to include in the greeting.</param>
         /// <returns>GreetingDTO instance.</returns>
         [HttpGet]
         [ResponseType(typeof(GreetingDTO))]
