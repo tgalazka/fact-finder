@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Web.Http;
+using System.Web.Http.Description;
 
 namespace FactFinder.Controllers
 {
@@ -13,25 +15,24 @@ namespace FactFinder.Controllers
     public class GreetingController : ApiController
     {
         /// <summary>
-        /// Responnds with a simple greeting message.
+        /// Responds with a simple greeting message.
         /// </summary>
-        /// <returns>
-        /// {
-        ///     "greeting": "Hello, World!"
-        /// }
-        /// </returns>
+        /// <param name="name">Optional query parameter to generate a greeting for; defaults to 'World' if not supplied.</param>
+        /// <returns>GreetingDTO instance.</returns>
         [HttpGet]
-        public IHttpActionResult GetGreeting(string name = "")
+        [ResponseType(typeof(GreetingDTO))]
+        public IHttpActionResult GetGreeting([Microsoft.AspNetCore.Mvc.FromQuery]string name = "World")
         {
            GreetingDTO greeting = new GreetingDTO()
             {
-                greeting = String.Format("Hello, {0}!", name.Any() ? name : "World") 
+                greeting = String.Format("Hello, {0}!", name)
             };
             return Ok(greeting);
         }
 
         private class GreetingDTO
         {
+            [Required]
             public string greeting { get; set; }
         }
     }
